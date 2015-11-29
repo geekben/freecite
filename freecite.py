@@ -7,7 +7,7 @@ Created on 22 Nov 2015
 from __future__ import print_function
 
 import requests
-import xml.etree.ElementTree as ET
+from lxml import etree as ET
 
 
 __all__ = ["Client"]
@@ -27,11 +27,12 @@ class Client(object):
         r = requests.post(self.endpoint, 
                           data={"citation" : citationstring}, 
                           headers={"Accept": "text/xml"} )
-        
-        etree = ET.fromstring(r.text.encode('utf-8'))
-             
+
+        parser = ET.XMLParser(encoding="utf-8", recover=True)
+        etree = ET.fromstring(r.text.encode('utf-8'), parser=parser)
+
         citation = etree.find("citation")
-        
+
         return { "authors": [ a.text for a in citation.iter("author")], 
                "title": gettext("title"),
                "journal" : gettext("journal"),
@@ -51,11 +52,11 @@ class Client(object):
                           data={"citation[]" : citations }, 
                           headers={"Accept": "text/xml"} )
 
-
-        etree = ET.fromstring(r.text.encode('utf-8'))
+        parser = ET.XMLParser(encoding="utf-8", recover=True)
+        etree = ET.fromstring(r.text.encode('utf-8'), parser=parser)
 
         for citation in etree.findall("citation"):
-                  
+
             yield { "authors": [ a.text for a in citation.iter("author")], 
                    "title": gettext("title"),
                    "journal" : gettext("journal"),
@@ -63,7 +64,7 @@ class Client(object):
                    "pages" : gettext("pages")
             }
   
-        
+
         
 if __name__ == "__main__":
     client = Client()
