@@ -35,6 +35,7 @@ class Client(object):
 
         return { "authors": [ a.text for a in citation.iter("author")], 
                "title": gettext("title"),
+               "booktitle": gettext("booktitle"),
                "journal" : gettext("journal"),
                "volume" : gettext("volume"),
                "pages" : gettext("pages")
@@ -59,6 +60,7 @@ class Client(object):
 
             yield { "authors": [ a.text for a in citation.iter("author")], 
                    "title": gettext("title"),
+                   "booktitle": gettext("booktitle"),
                    "journal" : gettext("journal"),
                    "volume" : gettext("volume"),
                    "pages" : gettext("pages")
