@@ -15,6 +15,11 @@ __all__ = ["Client"]
 class Client(object):
     def __init__(self, endpoint="http://freecite.library.brown.edu/citations/create"):
         self.endpoint = endpoint
+        self.proxyDict = {
+                "http"  : "http://localhost:8087",
+                "https" : "https://localhost:8087",
+                "ftp"   : "ftp://localhost:8087"
+                }
 
     def parse(self, citationstring):
 
@@ -26,7 +31,8 @@ class Client(object):
 
         r = requests.post(self.endpoint, 
                           data={"citation" : citationstring}, 
-                          headers={"Accept": "text/xml"} )
+                          headers={"Accept": "text/xml"},
+                          proxies=self.proxyDict)
 
         parser = ET.XMLParser(encoding="utf-8", recover=True)
         etree = ET.fromstring(r.text.encode('utf-8'), parser=parser)
@@ -51,7 +57,8 @@ class Client(object):
 
         r = requests.post(self.endpoint, 
                           data={"citation[]" : citations }, 
-                          headers={"Accept": "text/xml"} )
+                          headers={"Accept": "text/xml"},
+                          proxies=self.proxyDict)
 
         parser = ET.XMLParser(encoding="utf-8", recover=True)
         etree = ET.fromstring(r.text.encode('utf-8'), parser=parser)
